@@ -527,7 +527,7 @@ public class MSGraphConnector implements Connector,
 
         if (objectClass.is(ObjectClass.ACCOUNT_NAME)) { // __ACCOUNT__
             UserProcessing userProcessing = new UserProcessing(getGraphEndpoint(), getSchemaTranslator());
-            return userProcessing.updateUser(uid, attrsDelta, options);
+            return userProcessing.updateUser(uid, attrsDelta, options, configuration.isRevokeSignInSessionsOnDisable());
 
         } else if (objectClass.is(ObjectClass.GROUP_NAME)) { // __GROUP__
             GroupProcessing groupProcessing = new GroupProcessing(getGraphEndpoint());

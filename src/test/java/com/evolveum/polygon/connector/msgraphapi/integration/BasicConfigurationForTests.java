@@ -50,6 +50,7 @@ public class BasicConfigurationForTests implements ObjectConstants {
         msGraphConfiguration.setTenantId(parser.getTenantId());
         msGraphConfiguration.setDisabledPlans(parser.getDisabledPlans());
         msGraphConfiguration.setDiscoverSchema(parser.isDiscoverSchame());
+        msGraphConfiguration.setRevokeSignInSessionsOnDisable(parser.isRevokeSignInSessions());
         this.tenantId = parser.getTenantId();
         this.domain = parser.getDomain();
         licenses = parser.getLicenses();

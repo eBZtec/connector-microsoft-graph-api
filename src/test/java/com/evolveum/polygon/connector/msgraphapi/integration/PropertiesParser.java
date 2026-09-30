@@ -33,6 +33,7 @@ public class PropertiesParser {
     private static final String GENERIC_SCHEMA_ATTR_INFO_NAME = "genericSchemaAttributeInfoName";
     private static final String DISCOVER_SCHEMA = "discoverSchema";
     private static final String TESTING_USER_ID = "testUserId";
+    private static final String REVOKE_SIGN_IN_SESSIONS = "revokeSignInSessions";
 
     public PropertiesParser() {
         try {
@@ -106,6 +107,11 @@ public class PropertiesParser {
 
     public boolean isDiscoverSchame() {
         String value = (String) PROPERTIES.get(DISCOVER_SCHEMA);
+        return Boolean.valueOf(value);
+    }
+
+    public boolean isRevokeSignInSessions() {
+        String value = (String) PROPERTIES.get(REVOKE_SIGN_IN_SESSIONS);
         return Boolean.valueOf(value);
     }
 

@@ -26,6 +26,7 @@ public class UserProcessing extends ObjectProcessing {
     private static final String MESSAGES = "messages";
     private static final String INVITATIONS = "/invitations";
     private static final String ASSIGN_LICENSES = "/assignLicense";
+    private static final String REVOKE_SIGN_IN_SESSIONS = "revokeSignInSessions";
 
     private final static String ROLE_ASSIGNMENT = "/roleManagement/directory/roleAssignments";
 
@@ -899,13 +900,16 @@ public class UserProcessing extends ObjectProcessing {
         }
     }
 
-    public Set<AttributeDelta> updateUser(Uid uid, Set<AttributeDelta> attrsDelta, OperationOptions options) {
+    public Set<AttributeDelta> updateUser(Uid uid, Set<AttributeDelta> attrsDelta, OperationOptions options,
+                                          boolean isRevokeSignInSessionsOnDisable) {
         LOG.info("Start updateUser, Uid: {0}, attrsDelta: {1}", uid, attrsDelta);
         final GraphEndpoint endpoint = getGraphEndpoint();
 
         AttributeDelta assignedLicensesDelta = null;
         AttributeDelta managerIdDelta = null;
         AttributeDelta photoDelta = null;
+        AttributeDelta disableDelta = null;
+
         List<String> oldSelectors = new ArrayList<>();
         for (AttributeDelta delta : attrsDelta) {
             if (UPDATABLE_MULTIPLE_VALUE_ATTRS_OF_USER.contains(delta.getName())) {
@@ -927,6 +931,9 @@ public class UserProcessing extends ObjectProcessing {
                     break;
                 case ATTR_USERPHOTO:
                     photoDelta = delta;
+                    break;
+                case ATTR_ICF_ENABLED:
+                    disableDelta = delta;
                     break;
             }
         }
@@ -961,7 +968,35 @@ public class UserProcessing extends ObjectProcessing {
         assignManager(uid, managerIdDelta);
         assignPhoto(uid, photoDelta);
 
+        if (isRevokeSignInSessionsOnDisable) {
+            revokeSignInSessions(uid, disableDelta);
+        }
+
         return null;
+    }
+
+    private void revokeSignInSessions(Uid uid, AttributeDelta attributeDelta) {
+        if (attributeDelta == null) return;
+
+        Boolean accountEnabled = (Boolean) attributeDelta.getValuesToReplace().stream().findFirst().orElse(Boolean.TRUE);
+        revokeSignInSessions(uid, accountEnabled);
+    }
+
+    private void revokeSignInSessions(Uid uid, Boolean accountEnabled) {
+        if (accountEnabled) return;
+
+        revokeSignInSessions(uid);
+    }
+
+    private void revokeSignInSessions(Uid uid) {
+        final GraphEndpoint endpoint = getGraphEndpoint();
+        final URIBuilder uriBuilder = endpoint.createURIBuilder()
+                .setPath(USERS + "/" + uid.getUidValue() + "/" + REVOKE_SIGN_IN_SESSIONS);
+        URI uri = endpoint.getUri(uriBuilder);
+
+        HttpEntityEnclosingRequestBase request = new HttpPost(uri);
+        endpoint.callRequest(request, false);
+        LOG.ok("Sign in Sessions revoked for account \"{0}\"", uid.getUidValue());
     }
 
     private void assignPhoto(Uid uid, Attribute attribute) {

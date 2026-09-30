@@ -55,6 +55,9 @@ public class MSGraphConfiguration extends AbstractConfiguration
     private String[] userDirectoryExtensions;
     private String[] groupDirectoryExtensions;
 
+    // SignIn Sessions
+    private boolean revokeSignInSessionsOnDisable = false;
+
     @ConfigurationProperty(order = 10, displayMessageKey = "ClientId.display", helpMessageKey = "ClientId.help", required = true)
 
     public String getClientId() {
@@ -297,6 +300,19 @@ public class MSGraphConfiguration extends AbstractConfiguration
     public String[] getGroupDirectoryExtensions() {return groupDirectoryExtensions;}
 
     public void setGroupDirectoryExtensions(String[] groupDirectoryExtensions) {this.groupDirectoryExtensions = groupDirectoryExtensions;}
+
+    @ConfigurationProperty(
+            order = 230,
+            displayMessageKey = "RevokeSignInSessionsOnDisable.display",
+            helpMessageKey = "RevokeSignInSessionsOnDisable.help"
+    )
+    public boolean isRevokeSignInSessionsOnDisable() {
+        return revokeSignInSessionsOnDisable;
+    }
+
+    public void setRevokeSignInSessionsOnDisable(boolean revokeSignInSessionsOnDisable) {
+        this.revokeSignInSessionsOnDisable = revokeSignInSessionsOnDisable;
+    }
 
     @Override
     public void validate() {

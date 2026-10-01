@@ -80,7 +80,6 @@ public class GroupProcessing extends ObjectProcessing {
         ObjectClassInfoBuilder groupObjClassBuilder = new ObjectClassInfoBuilder();
 
         groupObjClassBuilder.setType(type());
-        groupObjClassBuilder.setDescription("Microsoft Entra ID group");
 
         //required
 

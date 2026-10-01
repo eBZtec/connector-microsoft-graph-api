@@ -229,7 +229,6 @@ public class UserProcessing extends ObjectProcessing {
     protected ObjectClassInfo objectClassInfo() {
         ObjectClassInfoBuilder userObjClassBuilder = new ObjectClassInfoBuilder();
         userObjClassBuilder.setType(type());
-        userObjClassBuilder.setDescription("Microsoft Entra ID user account");
 
         userObjClassBuilder.addAttributeInfo(OperationalAttributeInfos.ENABLE);
         userObjClassBuilder.addAttributeInfo(OperationalAttributeInfos.PASSWORD);
